@@ -1,0 +1,17 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <form method="post">
+        <div class="row">
+            <div class="col-md-2">Текст для оценки:</div>
+            <div class="col-md-10">
+                <textarea name="text" rows="3" required></textarea>
+                <input type="submit"/>
+            </div>
+        </div>
+    </form>
+</div>
