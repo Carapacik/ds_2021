@@ -6,13 +6,11 @@ namespace Valuator
 {
     public class RedisStorage : IStorage
     {
-        private const string Host = "localhost";
-        private const int Port = 6379;
         private readonly IConnectionMultiplexer _connection;
 
         public RedisStorage()
         {
-            _connection = ConnectionMultiplexer.Connect(Host);
+            _connection = ConnectionMultiplexer.Connect(Constants.Host);
         }
 
         public void Store(string key, string value)
@@ -29,9 +27,9 @@ namespace Valuator
 
         public List<string> GetKeys()
         {
-            var keys = _connection.GetServer(Host, Port).Keys();
+            var keys = _connection.GetServer(Constants.Host, Constants.Port).Keys();
 
-            return keys.Select(item => item.ToString()).ToList();
+            return keys.Select(x => x.ToString()).ToList();
         }
     }
 }

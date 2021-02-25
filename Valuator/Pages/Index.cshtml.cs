@@ -22,21 +22,21 @@ namespace Valuator.Pages
             var id = Guid.NewGuid().ToString();
 
             var similarityKey = Constants.SimilarityKeyPrefix + id;
-            //Посчитать similarity и сохранить в БД по ключу similarityKey
-            var similarity = GetSimilarity(text, id);
+            //Подсчёт similarity и сохранение в БД по ключу similarityKey
+            var similarity = GetSimilarity(text);
             _storage.Store(similarityKey, similarity.ToString());
 
             var textKey = Constants.TextKeyPrefix + id;
-            //Сохранить в БД text по ключу textKey
+            //Сохраение в БД text по ключу textKey
             _storage.Store(textKey, text);
 
             var rankKey = Constants.RankKeyPrefix + id;
-            //Посчитать rank и сохранить в БД по ключу rankKey
+            //Подсчёт rank и сохранение в БД по ключу rankKey
             _storage.Store(rankKey, GetRank(text));
             return Redirect($"summary?id={id}");
         }
 
-        private int GetSimilarity(string text, string id)
+        private int GetSimilarity(string text)
         {
             var keys = _storage.GetKeys();
 
@@ -47,9 +47,9 @@ namespace Valuator.Pages
 
         private static string GetRank(string text)
         {
-            var notLetterCount = text.Count(ch => !char.IsLetter(ch));
+            var nonLetterCount = text.Count(x => !char.IsLetter(x));
 
-            return ((double) notLetterCount / text.Length).ToString(CultureInfo.CurrentCulture);
+            return (nonLetterCount / text.Length).ToString(CultureInfo.CurrentCulture);
         }
     }
 }
