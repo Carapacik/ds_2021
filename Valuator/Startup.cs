@@ -15,10 +15,11 @@ namespace Valuator
 
         private IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
+        public static void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
             services.AddScoped<IStorage, RedisStorage>();
+            services.AddScoped<IMessageBroker, NatsBroker>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

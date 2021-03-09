@@ -25,11 +25,15 @@ namespace Valuator
             return db.StringGet(key);
         }
 
-        public List<string> GetKeys()
+        public IEnumerable<string> GetKeys()
         {
-            var keys = _connection.GetServer(Constants.Host, Constants.Port).Keys();
+            return _connection.GetServer(Constants.Host, Constants.Port).Keys().Select(x => x.ToString()).ToList();
+        }
 
-            return keys.Select(x => x.ToString()).ToList();
+        public bool IsKeyExist(string key)
+        {
+            var db = _connection.GetDatabase();
+            return db.KeyExists(key);
         }
     }
 }
