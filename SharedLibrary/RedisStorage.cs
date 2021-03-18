@@ -2,7 +2,7 @@
 using System.Linq;
 using StackExchange.Redis;
 
-namespace Valuator
+namespace SharedLibrary
 {
     public class RedisStorage : IStorage
     {

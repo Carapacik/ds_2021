@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Valuator", "Valuator\Valuat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RankCalculator", "RankCalculator\RankCalculator.csproj", "{0DE05878-48C8-4360-B284-7496120D873B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedLibrary", "SharedLibrary\SharedLibrary.csproj", "{7C17644A-6C21-4B5F-8A05-C607B029AF0D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{0DE05878-48C8-4360-B284-7496120D873B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE05878-48C8-4360-B284-7496120D873B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE05878-48C8-4360-B284-7496120D873B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C17644A-6C21-4B5F-8A05-C607B029AF0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C17644A-6C21-4B5F-8A05-C607B029AF0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C17644A-6C21-4B5F-8A05-C607B029AF0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C17644A-6C21-4B5F-8A05-C607B029AF0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

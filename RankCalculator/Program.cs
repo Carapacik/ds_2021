@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Valuator;
+using SharedLibrary;
 
 namespace RankCalculator
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Valuator
+namespace SharedLibrary
 {
     public interface IStorage
     {
