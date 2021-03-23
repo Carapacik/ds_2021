@@ -1,36 +1,45 @@
 ﻿using System;
 using System.Linq;
+using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Logging;
 using SharedLibrary;
 
 namespace Valuator.Pages
 {
     public class IndexModel : PageModel
     {
+        private readonly ILogger<IndexModel> _logger;
         private readonly IMessageBroker _messageBroker;
         private readonly IStorage _storage;
 
-        public IndexModel(IStorage storage, IMessageBroker messageBroker)
+        public IndexModel(ILogger<IndexModel> logger, IStorage storage, IMessageBroker messageBroker)
         {
             _storage = storage;
             _messageBroker = messageBroker;
+            _logger = logger;
         }
 
         public IActionResult OnPost(string text)
         {
+            _logger.LogDebug(text);
+
             if (string.IsNullOrEmpty(text)) Redirect("/");
 
             var id = Guid.NewGuid().ToString();
 
             //Подсчёт similarity и сохранение в БД по ключу similarityKey
-            _storage.Store(Constants.SimilarityKeyPrefix + id, GetSimilarity(text).ToString());
+            var similarity = GetSimilarity(text);
+            _storage.Store(Constants.SimilarityKeyPrefix + id, similarity.ToString());
+
+            _messageBroker.Publish(Constants.SimilarityKeyCalculated,
+                JsonSerializer.Serialize(new Similarity {Id = id, Value = similarity}));
 
             //Сохраение в БД
             _storage.Store(Constants.TextKeyPrefix + id, text);
 
-            //Подсчёт rank и сохранение в БД по ключу rankKey
-            _messageBroker.Publish(Constants.RankKeyPrefix, id);
+            _messageBroker.Publish(Constants.RankKey, id);
 
             return Redirect($"summary?id={id}");
         }
