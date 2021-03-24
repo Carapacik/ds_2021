@@ -39,7 +39,7 @@ namespace Valuator.Pages
             //Сохраение в БД
             _storage.Store(Constants.TextKeyPrefix + id, text);
 
-            _messageBroker.Publish(Constants.RankKey, id);
+            _messageBroker.Publish(Constants.RankKeyProcessing, id);
 
             return Redirect($"summary?id={id}");
         }

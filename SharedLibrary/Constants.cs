@@ -8,7 +8,7 @@ namespace SharedLibrary
         public const string RankKeyPrefix = "RANK-";
         public const string TextKeyPrefix = "TEXT-";
         public const int Port = 6379;
-        public const string RankKey = "valuator.processing.rank";
+        public const string RankKeyProcessing = "valuator.processing.rank";
         public const string SimilarityKeyCalculated = "valuator.similarity_calculated";
         public const string RankKeyCalculated = "rank_calculator.rank_calculated";
 
