@@ -19,7 +19,7 @@ namespace RankCalculator
         {
             _logger = logger;
             _connection = NatsFactory.GetNatsConnection();
-            _subscription = _connection.SubscribeAsync(Constants.RankKeyProcessing, (_, args) =>
+            _subscription = _connection.SubscribeAsync(Constants.RankKeyProcessing, "rank", (_, args) =>
             {
                 var id = Encoding.UTF8.GetString(args.Message.Data);
                 var textKey = Constants.TextKeyPrefix + id;
@@ -27,6 +27,8 @@ namespace RankCalculator
 
                 var text = storage.Load(textKey);
                 var rank = GetRank(text);
+
+                _logger.LogInformation($"id: [{id}], text: \"{text}\", rank: [{rank}]");
                 storage.Store(Constants.RankKeyPrefix + id, rank.ToString(CultureInfo.InvariantCulture));
 
                 var rankData = new Rank {Id = id, Value = rank};
@@ -35,20 +37,6 @@ namespace RankCalculator
             });
         }
 
-        /* Старая функция запуска
-        public void Run()
-        {
-            _logger.LogInformation("RankCalculator subscriptions started");
-            _subscription.Start();
-            
-            Console.WriteLine("Press Enter to exit");
-            Console.ReadLine();
-
-            _logger.LogInformation("RankCalculator is disposing...");
-            _subscription.Unsubscribe();
-            _connection.Drain();
-            _connection.Close();
-        }*/
         public void Dispose()
         {
             _logger.LogInformation("RankCalculator is disposing...");
