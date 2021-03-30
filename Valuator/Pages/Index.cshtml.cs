@@ -29,12 +29,12 @@ namespace Valuator.Pages
 
             var id = Guid.NewGuid().ToString();
 
-            //Подсчёт similarity и сохранение в БД по ключу similarityKey
+            //Подсчёт similarity и сохранение в БД по ключу
             var similarity = GetSimilarity(text);
             _storage.Store(Constants.SimilarityKeyPrefix + id, similarity.ToString());
 
             _messageBroker.Publish(Constants.SimilarityKeyCalculated,
-                JsonSerializer.Serialize(new Similarity {Id = id, Value = similarity}));
+                JsonSerializer.Serialize(new SimilarityObject {Id = id, Value = similarity}));
 
             //Сохраение в БД
             _storage.Store(Constants.TextKeyPrefix + id, text);

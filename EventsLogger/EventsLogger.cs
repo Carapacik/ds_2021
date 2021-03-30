@@ -19,13 +19,13 @@ namespace EventsLogger
 
             _subscription = _connection.SubscribeAsync("rank_calculator.rank_calculated", (sender, args) =>
             {
-                var rank = JsonSerializer.Deserialize<Rank>(args.Message.Data);
+                var rank = JsonSerializer.Deserialize<RankObject>(args.Message.Data);
                 logger.LogInformation($"Event: {args.Message.Subject}\n{rank}");
             });
 
             _subscription = _connection.SubscribeAsync("valuator.similarity_calculated", (sender, args) =>
             {
-                var similarity = JsonSerializer.Deserialize<Similarity>(args.Message.Data);
+                var similarity = JsonSerializer.Deserialize<SimilarityObject>(args.Message.Data);
                 logger.LogInformation($"Event: {args.Message.Subject}\n{similarity}");
             });
         }

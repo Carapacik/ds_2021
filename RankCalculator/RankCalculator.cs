@@ -31,9 +31,8 @@ namespace RankCalculator
                 _logger.LogInformation($"id: [{id}], text: \"{text}\", rank: [{rank}]");
                 storage.Store(Constants.RankKeyPrefix + id, rank.ToString(CultureInfo.InvariantCulture));
 
-                var rankData = new Rank {Id = id, Value = rank};
                 _connection.Publish(Constants.RankKeyCalculated,
-                    Encoding.UTF8.GetBytes(JsonSerializer.Serialize(rankData)));
+                    Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new RankObject {Id = id, Value = rank})));
             });
         }
 
