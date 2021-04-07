@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using SharedLibrary;
@@ -20,12 +19,12 @@ namespace Valuator.Pages
         public double Rank { get; set; }
         public double Similarity { get; set; }
 
-        private async Task<string> GetRankAsync(string id)
+        private async Task<string> GetRankAsync(string id, string shard)
         {
             const int tryCount = 1000;
             for (var i = 0; i < tryCount; i++)
             {
-                var rank = _storage.Load(Constants.RankKeyPrefix + id);
+                var rank = _storage.Load(shard, Constants.RankKeyPrefix + id);
                 if (rank != null)
                     return rank;
 
@@ -37,14 +36,21 @@ namespace Valuator.Pages
 
         public async Task OnGetAsync(string id)
         {
-            _logger.LogDebug(id);
+            var shard = _storage.LoadShard(id);
+            _logger.LogInformation($"{shard} : {id} - OnGetAsync");
 
             string rank;
-            if ((rank = await GetRankAsync(id)) != null)
-                Rank = double.Parse(rank, CultureInfo.InvariantCulture);
+            if ((rank = await GetRankAsync(id, shard)) != null)
+            {
+                _logger.LogInformation($"{rank} - Rank");
+                Rank = double.Parse(rank);
+            }
             else
-                _logger.LogWarning("Could not get rank value for id: " + id);
-            Similarity = double.Parse(_storage.Load(Constants.SimilarityKeyPrefix + id), CultureInfo.InvariantCulture);
+            {
+                _logger.LogWarning($"Could not get rank value on shard [{shard}] for id: {id}");
+            }
+
+            Similarity = int.Parse(_storage.Load(shard, Constants.SimilarityKeyPrefix + id));
         }
     }
 }

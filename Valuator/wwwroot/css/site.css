@@ -15,7 +15,8 @@ a {
   border-color: #1861ac;
 }
 
-.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+.nav-pills .nav-link.active,
+.nav-pills .show>.nav-link {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
@@ -26,6 +27,7 @@ a {
 html {
   font-size: 14px;
 }
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -35,6 +37,7 @@ html {
 .border-top {
   border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
 }
@@ -57,10 +60,6 @@ body {
   margin-bottom: 60px;
 }
 
-.body-content{
-  padding: 0 15px;
-}
-
 .footer {
   position: absolute;
   bottom: 0;
@@ -71,15 +70,15 @@ body {
 
 /* Form styles
 -------------------------------------------------- */
-input{
+input {
   padding: 15px;
 }
 
-textarea{
+textarea {
   padding: 15px;
 }
 
-#valuator-form{
+#valuator-form {
   padding: 15px;
   margin: 15px 0;
 }

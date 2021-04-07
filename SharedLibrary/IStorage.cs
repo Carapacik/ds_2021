@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace SharedLibrary
+﻿namespace SharedLibrary
 {
     public interface IStorage
     {
-        void Store(string key, string value);
-        string Load(string key);
-        IEnumerable<string> GetKeys();
-        bool IsKeyExist(string key);
+        void Store(string shard, string key, string value);
+        void StoreShard(string key, string shard);
+        string Load(string shard, string key);
+        string LoadShard(string key);
+        bool HasTextDuplicates(string text);
+        bool IsKeyExist(string shard, string key);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
@@ -22,14 +21,14 @@ namespace RankCalculator
             _subscription = _connection.SubscribeAsync(Constants.RankKeyProcessing, "rank", (_, args) =>
             {
                 var id = Encoding.UTF8.GetString(args.Message.Data);
+                var shard = storage.LoadShard(id);
                 var textKey = Constants.TextKeyPrefix + id;
-                if (!storage.IsKeyExist(textKey)) return;
-
-                var text = storage.Load(textKey);
+                if (!storage.IsKeyExist(shard, textKey)) return;
+                var text = storage.Load(shard, textKey);
                 var rank = GetRank(text);
 
-                _logger.LogInformation($"id: [{id}], text: \"{text}\", rank: [{rank}]");
-                storage.Store(Constants.RankKeyPrefix + id, rank.ToString(CultureInfo.InvariantCulture));
+                _logger.LogInformation($"Shard: [{shard}], id: [{id}], text: \"{text}\", rank: [{rank}]");
+                storage.Store(shard, Constants.RankKeyPrefix + id, rank.ToString());
 
                 _connection.Publish(Constants.RankKeyCalculated,
                     Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new RankObject {Id = id, Value = rank})));
