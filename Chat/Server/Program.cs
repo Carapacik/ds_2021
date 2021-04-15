@@ -1,82 +1,60 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 
 namespace Server
 {
-    class Program
+    internal static class Program
     {
-        public static void StartListening()
+        private static void StartListening(int port)
         {
-
-            // Разрешение сетевых имён
-            
-            // Привязываем сокет ко всем интерфейсам на текущей машинe
-            IPAddress ipAddress = IPAddress.Any; 
-            
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
-
-            // CREATE
-            Socket listener = new Socket(
+            var history = new List<string>();
+            var ipAddress = IPAddress.Any;
+            var localEndPoint = new IPEndPoint(ipAddress, port);
+            var listener = new Socket(
                 ipAddress.AddressFamily,
                 SocketType.Stream,
                 ProtocolType.Tcp);
 
             try
             {
-                // BIND
                 listener.Bind(localEndPoint);
-
-                // LISTEN
                 listener.Listen(10);
-
                 while (true)
                 {
-                    Console.WriteLine("Ожидание соединения клиента...");
-                    // ACCEPT
-                    Socket handler = listener.Accept();
+                    var handler = listener.Accept();
+                    Console.WriteLine("Receive data...");
 
-                    Console.WriteLine("Получение данных...");
-                    byte[] buf = new byte[1024];
-                    string data = null;
-                    while (true)
-                    {
-                        // RECEIVE
-                        int bytesRec = handler.Receive(buf);
+                    var buf = new byte[1024];
+                    var bytesRec = handler.Receive(buf);
+                    var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
+                    history.Add(data);
+                    Console.WriteLine("Data received: {0}", data);
 
-                        data += Encoding.UTF8.GetString(buf, 0, bytesRec);
-                        if (data.IndexOf("<EOF>") > -1)
-                        {
-                            break;
-                        }
-                    }
-
-                    Console.WriteLine("Полученный текст: {0}", data);
-
-                    // Отправляем текст обратно клиенту
-                    byte[] msg = Encoding.UTF8.GetBytes(data);
-
-                    // SEND
+                    var jsonMsg = JsonSerializer.Serialize(history);
+                    var msg = Encoding.UTF8.GetBytes(jsonMsg);
                     handler.Send(msg);
 
-                    // RELEASE
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();
                 }
-
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.ToString());
             }
         }
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Запуск сервера...");
-            StartListening();
 
-            Console.WriteLine("\nНажмите ENTER чтобы выйти...");
+        private static void Main(string[] args)
+        {
+            if (args.Length != 1) throw new Exception("Invalid count of arguments");
+            Console.WriteLine("Launch server...");
+            StartListening(int.Parse(args[0]));
+
+            Console.WriteLine("Press any button to exit...");
             Console.Read();
         }
     }

@@ -1,68 +1,57 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.Json;
 
 namespace Client
 {
-    class Program
+    internal static class Program
     {
-        public static void StartClient()
+        private static void StartClient(string ip, int port, string message)
         {
             try
             {
-                // Разрешение сетевых имён
-                IPAddress ipAddress = IPAddress.Loopback;
-                //IPHostEntry ipHostInfo = Dns.GetHostEntry(Dns.GetHostName());
-                //IPAddress ipAddress = ipHostInfo.AddressList[0];
-
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, 11000);
-
-                // CREATE
-                Socket sender = new Socket(
+                var ipAddress = ip == "localhost" ? IPAddress.Loopback : IPAddress.Parse(ip);
+                var remoteEp = new IPEndPoint(ipAddress, port);
+                var sender = new Socket(
                     ipAddress.AddressFamily,
-                    SocketType.Stream, 
+                    SocketType.Stream,
                     ProtocolType.Tcp);
 
                 try
                 {
-                    // CONNECT
-                    sender.Connect(remoteEP);
+                    sender.Connect(remoteEp);
+                    Console.WriteLine("Remote socket address: {0}",
+                        sender.RemoteEndPoint);
 
-                    Console.WriteLine("Удалённый адрес подключения сокета: {0}",
-                        sender.RemoteEndPoint.ToString());
+                    sender.Send(Encoding.UTF8.GetBytes(message));
 
-                    // Подготовка данных к отправке
-                    byte[] msg = Encoding.UTF8.GetBytes("Hello, world!<EOF>");
+                    var buf = new byte[1024];
+                    var bytesRec = sender.Receive(buf);
+                    var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
 
-                    // SEND
-                    int bytesSent = sender.Send(msg);
+                    var history = JsonSerializer.Deserialize<List<string>>(data);
+                    if (history != null)
+                        foreach (var msg in history)
+                            Console.WriteLine(msg);
 
-                    // RECEIVE
-                    byte[] buf = new byte[1024];
-                    int bytesRec = sender.Receive(buf);
-
-                    Console.WriteLine("Ответ: {0}",
-                        Encoding.UTF8.GetString(buf, 0, bytesRec));
-
-                    // RELEASE
                     sender.Shutdown(SocketShutdown.Both);
                     sender.Close();
-
                 }
                 catch (ArgumentNullException ane)
                 {
-                    Console.WriteLine("ArgumentNullException : {0}", ane.ToString());
+                    Console.WriteLine("ArgumentNullException : {0}", ane);
                 }
                 catch (SocketException se)
                 {
-                    Console.WriteLine("SocketException : {0}", se.ToString());
+                    Console.WriteLine("SocketException : {0}", se);
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Unexpected exception : {0}", e.ToString());
+                    Console.WriteLine("Unexpected exception : {0}", e);
                 }
-
             }
             catch (Exception e)
             {
@@ -70,9 +59,10 @@ namespace Client
             }
         }
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            StartClient();
+            if (args.Length != 3) throw new Exception("Invalid count of arguments");
+            StartClient(args[0], int.Parse(args[1]), args[2]);
         }
     }
 }
