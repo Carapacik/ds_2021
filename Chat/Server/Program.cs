@@ -26,13 +26,13 @@ namespace Server
                 while (true)
                 {
                     var handler = listener.Accept();
-                    Console.WriteLine("Receive data...");
+                    // Console.WriteLine("Receive data...");
 
                     var buf = new byte[1024];
                     var bytesRec = handler.Receive(buf);
                     var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
                     history.Add(data);
-                    Console.WriteLine("Data received: {0}", data);
+                    Console.WriteLine($"Message received: {data}");
 
                     var jsonMsg = JsonSerializer.Serialize(history);
                     var msg = Encoding.UTF8.GetBytes(jsonMsg);
@@ -51,11 +51,10 @@ namespace Server
         private static void Main(string[] args)
         {
             if (args.Length != 1) throw new Exception("Invalid count of arguments");
-            Console.WriteLine("Launch server...");
             StartListening(int.Parse(args[0]));
 
-            Console.WriteLine("Press any button to exit...");
-            Console.Read();
+            // Console.WriteLine("Press any button to exit...");
+            // Console.Read();
         }
     }
 }

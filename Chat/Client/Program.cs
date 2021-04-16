@@ -23,9 +23,6 @@ namespace Client
                 try
                 {
                     sender.Connect(remoteEp);
-                    Console.WriteLine("Remote socket address: {0}",
-                        sender.RemoteEndPoint);
-
                     sender.Send(Encoding.UTF8.GetBytes(message));
 
                     var buf = new byte[1024];
@@ -42,15 +39,15 @@ namespace Client
                 }
                 catch (ArgumentNullException ane)
                 {
-                    Console.WriteLine("ArgumentNullException : {0}", ane);
+                    Console.WriteLine($"ArgumentNullException : {ane}");
                 }
                 catch (SocketException se)
                 {
-                    Console.WriteLine("SocketException : {0}", se);
+                    Console.WriteLine($"SocketException : {se}");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Unexpected exception : {0}", e);
+                    Console.WriteLine($"Unexpected exception : {e}");
                 }
             }
             catch (Exception e)
