@@ -12,9 +12,9 @@ namespace SharedLibrary
         public const string SimilarityKeyCalculated = "valuator.similarity_calculated";
         public const string RankKeyCalculated = "rank_calculator.rank_calculated";
 
-        public const string ShardIdRus = "RUS";
-        public const string ShardIdEu = "EU";
-        public const string ShardIdOther = "OTHER";
+        public const string ShardIdRus = "DB_RUS";
+        public const string ShardIdEu = "DB_EU";
+        public const string ShardIdOther = "DB_OTHER";
 
         public static string HostName
         {
