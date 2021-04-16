@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.Json;
+using SharedLibrary;
 
 namespace Client
 {
@@ -23,17 +23,12 @@ namespace Client
                 try
                 {
                     sender.Connect(remoteEp);
-                    sender.Send(Encoding.UTF8.GetBytes(message));
-
-                    var buf = new byte[2048];
-                    var bytesRec = sender.Receive(buf);
-                    var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
-
+                    Interactions.SendMsg(sender, message);
+                    var data = Interactions.ReceiveMsg(sender);
                     var history = JsonSerializer.Deserialize<List<string>>(data);
                     if (history != null)
                         foreach (var msg in history)
                             Console.WriteLine(msg);
-
                     sender.Shutdown(SocketShutdown.Both);
                     sender.Close();
                 }
@@ -58,7 +53,7 @@ namespace Client
 
         private static void Main(string[] args)
         {
-            if (args.Length != 3) throw new Exception("Invalid count of arguments");
+            Interactions.CheckArgumentsCount(args, 3);
             StartClient(args[0], int.Parse(args[1]), args[2]);
         }
     }

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.Json;
+using SharedLibrary;
 
 namespace Server
 {
@@ -26,17 +26,11 @@ namespace Server
                 while (true)
                 {
                     var handler = listener.Accept();
-
-                    var buf = new byte[2048];
-                    var bytesRec = handler.Receive(buf);
-                    var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
+                    var data = Interactions.ReceiveMsg(handler);
                     history.Add(data);
                     Console.WriteLine($"Message received: {data}");
-
                     var jsonMsg = JsonSerializer.Serialize(history);
-                    var msg = Encoding.UTF8.GetBytes(jsonMsg);
-                    handler.Send(msg);
-
+                    Interactions.SendMsg(handler, jsonMsg);
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();
                 }
@@ -49,7 +43,7 @@ namespace Server
 
         private static void Main(string[] args)
         {
-            if (args.Length != 1) throw new Exception("Invalid count of arguments");
+            Interactions.CheckArgumentsCount(args, 1);
             StartListening(int.Parse(args[0]));
         }
     }
