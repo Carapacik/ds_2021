@@ -25,7 +25,7 @@ namespace Client
                     sender.Connect(remoteEp);
                     sender.Send(Encoding.UTF8.GetBytes(message));
 
-                    var buf = new byte[1024];
+                    var buf = new byte[2048];
                     var bytesRec = sender.Receive(buf);
                     var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
 

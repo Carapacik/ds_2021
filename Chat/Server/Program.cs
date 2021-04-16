@@ -26,9 +26,8 @@ namespace Server
                 while (true)
                 {
                     var handler = listener.Accept();
-                    // Console.WriteLine("Receive data...");
 
-                    var buf = new byte[1024];
+                    var buf = new byte[2048];
                     var bytesRec = handler.Receive(buf);
                     var data = Encoding.UTF8.GetString(buf, 0, bytesRec);
                     history.Add(data);
@@ -52,9 +51,6 @@ namespace Server
         {
             if (args.Length != 1) throw new Exception("Invalid count of arguments");
             StartListening(int.Parse(args[0]));
-
-            // Console.WriteLine("Press any button to exit...");
-            // Console.Read();
         }
     }
 }
